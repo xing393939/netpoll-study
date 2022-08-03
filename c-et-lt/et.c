@@ -15,7 +15,7 @@ void lib_connect(int fd, char *addr, int port);
 
 void lib_epoll_create1();
 
-void lib_epoll_add(int op, int fd);
+void lib_epoll_ctl(int op, int fd, int events);
 
 int lib_epoll_wait(struct epoll_event *events, int num);
 
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     int ret = write(clientFd, str, strlen(str));
 
     lib_epoll_create1();
-    lib_epoll_add(EPOLLIN | EPOLLET, clientFd);
+    lib_epoll_ctl(EPOLL_CTL_ADD, clientFd, EPOLLIN | EPOLLET);
     struct epoll_event *events;
     events = calloc(64, sizeof(struct epoll_event));
     int num;

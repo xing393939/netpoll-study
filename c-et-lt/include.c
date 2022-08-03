@@ -32,11 +32,11 @@ void lib_connect(int fd, char *addr, int port) {
     }
 }
 
-void lib_epoll_add(int op, int fd) {
+void lib_epoll_ctl(int op, int fd, int events) {
     struct epoll_event event;
     event.data.fd = fd;
-    event.events = op;
-    int ret = epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &event);
+    event.events = events;
+    int ret = epoll_ctl(epfd, op, fd, &event);
     if (ret != 0) {
         perror("epoll_ctl");
     }
