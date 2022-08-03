@@ -10,7 +10,6 @@
 #include <time.h>
 #include <signal.h>
 #include <arpa/inet.h>
-#include <strings.h>
 
 int epfd;
 
@@ -23,12 +22,11 @@ int lib_epoll_create1() {
     return epfd;
 }
 
-void lib_connect(int fd) {
+void lib_connect(int fd, char *addr, int port) {
     struct sockaddr_in servaddr;
-    bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
-    inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
-    servaddr.sin_port = htons(80);
+    servaddr.sin_port = htons(port);
+    inet_pton(AF_INET, addr, &servaddr.sin_addr);
     if (connect(fd, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0) {
         perror("connect error");
     }

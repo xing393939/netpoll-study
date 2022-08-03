@@ -11,7 +11,7 @@
 #include <signal.h>
 #include <string.h>
 
-void lib_connect(int fd);
+void lib_connect(int fd, char *addr, int port);
 
 void lib_epoll_create1();
 
@@ -22,7 +22,7 @@ int lib_epoll_wait(struct epoll_event *events, int num);
 int main(int argc, char *argv[]) {
     char *str = "GET / HTTP/1.1\n\n";
     int clientFd = socket(PF_INET, SOCK_STREAM, 0);
-    lib_connect(clientFd);
+    lib_connect(clientFd, "localhost", 80);
     int ret = write(clientFd, str, strlen(str));
 
     lib_epoll_create1();
