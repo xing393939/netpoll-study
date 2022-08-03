@@ -31,9 +31,9 @@ int main(int argc, char *argv[]) {
     events = calloc(64, sizeof(struct epoll_event));
     int num;
     num = lib_epoll_wait(events, 64);
-    printf("%d\n", num);
+    printf("num:%d events:%d\n", num, events[0].events);
     num = lib_epoll_wait(events, 64);
-    printf("%d\n", num);
+    printf("num:%d events:%d\n", num, events[0].events);
 }
 
 /*
