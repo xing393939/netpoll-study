@@ -17,7 +17,7 @@ void lib_epoll_create1();
 
 void lib_epoll_ctl(int op, int fd, int events);
 
-int lib_epoll_wait(struct epoll_event *events, int num);
+int lib_epoll_wait(struct epoll_event *events, int num, int timeout);
 
 int main(int argc, char *argv[]) {
     char *str = "GET / HTTP/1.1\n\n";
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     struct epoll_event *events;
     events = calloc(64, sizeof(struct epoll_event));
     int num;
-    num = lib_epoll_wait(events, 64);
+    num = lib_epoll_wait(events, 64, 1000);
     printf("num:%d events:%d\n", num, events[0].events);
     num = lib_epoll_wait(events, 64);
     printf("num:%d events:%d\n", num, events[0].events);
