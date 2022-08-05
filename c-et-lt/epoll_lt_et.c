@@ -219,13 +219,13 @@ int main(int argc, const char *argv[]) {
             /* 以下的LT，ET，以及是否阻塞都是是针对accept()函数返回的文件描述符，即函数里面的connfd */
 
             /* 3.connfd:阻塞的LT模式 */
-            //epoll_process(epollfd, events, number, sockfd, EPOLL_LT, FD_BLOCK);
+            epoll_process(epollfd, events, number, sockfd, EPOLL_LT, FD_BLOCK);
 
             /* 4.connfd:非阻塞的LT模式 */
             //epoll_process(epollfd, events, number, sockfd, EPOLL_LT, FD_NONBLOCK);
 
             /* 5.connfd:阻塞的ET模式，这里线程会阻塞在read()上，导致无法处理新请求 */
-            epoll_process(epollfd, events, number, sockfd, EPOLL_ET, FD_BLOCK);
+            // epoll_process(epollfd, events, number, sockfd, EPOLL_ET, FD_BLOCK);
 
             /* 6.connfd:非阻塞的ET模式 */
             //epoll_process(epollfd, events, number, sockfd, EPOLL_ET, FD_NONBLOCK);

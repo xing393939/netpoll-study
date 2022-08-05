@@ -31,6 +31,17 @@ int epoll_pwait(int epfd, struct epoll_event *events, int maxevents, int timeout
 ### 实例浅析epoll的LT和ET模式，ET模式为何要使用非阻塞IO
 * [实例浅析epoll的LT和ET模式，ET模式为何要使用非阻塞IO](https://learnku.com/articles/51861)
 
+```
+epool的lt是只要事件没有被处理就一直触发，et则只触发一次，导致et必须每次要循环处理完所有的事件，六个测试场景如下：
+
+1. sockfd是lt模式+非阻塞：能正常accept所有请求
+2. sockfd是et模式+非阻塞：会漏处理accept一些请求，因为每次epoll_wait返回时只处理了一个请求
+3. connfd是lt模式+阻塞：能正常处理所有连接的read
+4. connfd是lt模式+非阻塞：能正常处理所有连接的read
+5. connfd是et模式+阻塞：如果epoll_wait返回时只处理一次read，那么数据可能没有读完；如果循环处理read，当没有读事件时会阻塞线程。
+6. connfd是et模式+非阻塞：如果epoll_wait返回时只处理一次read，那么数据可能没有读完；如果循环处理read，能正常处理所有连接的read
+```
+
 ### Netpoll 模型的抽象和问题-曹大
 * [Netpoll 模型的抽象和问题-曹大](https://www.bilibili.com/video/BV1Lt4y1h7Zu)
 
