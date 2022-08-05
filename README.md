@@ -44,4 +44,13 @@ epool的lt是只要事件没有被处理就一直触发，et则只触发一次�
 
 ### Netpoll 模型的抽象和问题-曹大
 * [Netpoll 模型的抽象和问题-曹大](https://www.bilibili.com/video/BV1Lt4y1h7Zu)
+* pull.FD的Read和Write方法是有锁的，保证同一时间只有一个协程读或者写，[见源码](https://github.com/golang/go/blob/go1.16.10/src/internal/poll/fd_unix.go#L142)
+* 社区的netpoll的努力：改变Go的1个连接1个协程，在有读事件的时候才开启协程
+
+![img](images/read_write_block_mode.jpg)
+![img](images/netpollinit.jpg)
+![img](images/net_listen.jpg)
+![img](images/net_accept.jpg)
+![img](images/net_read.jpg)
+![img](images/net_write.jpg)
 
