@@ -61,7 +61,7 @@ void lib_epoll_ctl(int op, int fd, int events) {
     event.events = events;
     int ret = epoll_ctl(epfd, op, fd, &event);
     if (ret != 0) {
-        perror("epoll_ctl");
+        perror("epoll_ctl error");
     }
 }
 

@@ -31,12 +31,10 @@ int main(int argc, char *argv[]) {
     lib_epoll_create1();
     lib_epoll_ctl(EPOLL_CTL_ADD, listen_fd, EPOLLIN);
 
-    struct epoll_event *events;
-    events = calloc(64, sizeof(struct epoll_event));
+    struct epoll_event *events = calloc(64, sizeof(struct epoll_event));
     while (1) {
         int num = lib_epoll_wait(events, 64, 1000);
-        char *buf;
-        buf = calloc(512, sizeof(char));
+        char *buf = calloc(512, sizeof(char));
         for (int i = 0; i < num; i ++) {
             if (events[i].data.fd == listen_fd) {
                 int conn = lib_accept(listen_fd);

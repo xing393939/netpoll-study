@@ -29,8 +29,7 @@ int main(int argc, char *argv[]) {
 
     lib_epoll_create1();
     lib_epoll_ctl(EPOLL_CTL_ADD, client_fd, EPOLLIN);
-    struct epoll_event *events;
-    events = calloc(64, sizeof(struct epoll_event));
+    struct epoll_event *events = calloc(64, sizeof(struct epoll_event));
     int num;
     num = lib_epoll_wait(events, 64, 1000);
     printf("num:%d events:%d\n", num, events[0].data.fd);
