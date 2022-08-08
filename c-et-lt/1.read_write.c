@@ -23,7 +23,7 @@ int lib_epoll_wait(struct epoll_event *events, int num, int timeout);
 
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);
-    lib_connect(client_fd, "localhost", 6379);
+    lib_connect(client_fd, "127.0.0.1", 6379);
 
     int f = open("ping.txt", O_RDONLY);
     char str[10] = {0};
