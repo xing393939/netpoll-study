@@ -25,7 +25,7 @@ void lib_epoll_mod(int op, int fd);
 
 int lib_epoll_wait(struct epoll_event *events, int num, int timeout);
 
-// gcc 4.splice.c include.c -o 4.out && strace -c  ./4.out
+// gcc 4.splice.c include.c -o 4.out && strace -c ./4.out
 // echo info commandstats|redis-cli|grep ping
 // 1.30s
 int main(int argc, char *argv[]) {

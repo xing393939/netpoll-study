@@ -21,7 +21,7 @@ void lib_epoll_mod(int op, int fd);
 
 int lib_epoll_wait(struct epoll_event *events, int num, int timeout);
 
-// gcc 1.read_write.c include.c -o 3.out && strace -c  ./1.out
+// gcc 1.read_write.c include.c -o 1.out && strace -c ./1.out
 // 1.26s
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);

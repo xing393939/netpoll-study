@@ -23,7 +23,7 @@ void lib_epoll_mod(int op, int fd);
 
 int lib_epoll_wait(struct epoll_event *events, int num, int timeout);
 
-// gcc 3.sendfile.c include.c -o 3.out && strace -c  ./3.out
+// gcc 3.sendfile.c include.c -o 3.out && strace -c ./3.out
 // 0.66s
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);
