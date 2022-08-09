@@ -49,10 +49,12 @@ int main(int argc, char *argv[]) {
     int size = atoi(argv[1]);
     create_file("temp.txt", size);
     int f = open("temp.txt", O_RDONLY);
-    char *str;
 
     for (int i = 0; i < 10000; i++) {
-        str = mmap(0, size, PROT_READ, MAP_SHARED, f, 0);
+        char *str = (void *) -1;
+        while (str == (void *) -1) {
+            str = mmap(0, size, PROT_READ, MAP_SHARED, f, 0);
+        }
         lib_write(client_fd, str, strlen(str));
     }
     close(client_fd);

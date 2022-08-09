@@ -89,7 +89,7 @@ ssize_t lib_write(int fd, const void *vptr, size_t n) {
         nleft -= nwritten;
         ptr += nwritten;
     }
-    return (n);
+    return (n - nleft);
 }
 
 ssize_t lib_read(int fd, void *vptr, size_t n) {
