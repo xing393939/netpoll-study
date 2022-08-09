@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
     int f = open("ping.txt", O_RDONLY);
 
     for (int i = 0; i < 10000; i++) {
-        sendfile(client_fd, f, NULL, 10);
+        off_t tmp = 0;
+        sendfile(client_fd, f, &tmp, 10);
     }
 }
