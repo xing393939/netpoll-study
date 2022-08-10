@@ -62,6 +62,8 @@ int main(int argc, char *argv[]) {
         splice(f, &tmp, pfd[1], NULL, size, SPLICE_F_MOVE);
         splice(pfd[0], NULL, client_fd, NULL, size, SPLICE_F_MOVE | SPLICE_F_MORE);
     }
-    close(client_fd);
+    // wait for kernel sent success
+    sleep(2);
+    shutdown(client_fd, SHUT_WR);
     unlink("temp.txt");
 }

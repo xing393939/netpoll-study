@@ -51,6 +51,8 @@ int main(int argc, char *argv[]) {
         off_t tmp = 0;
         sendfile(client_fd, f, &tmp, size);
     }
-    close(client_fd);
+    // wait for kernel sent success
+    sleep(2);
+    shutdown(client_fd, SHUT_WR);
     unlink("temp.txt");
 }

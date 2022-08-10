@@ -54,6 +54,8 @@ int main(int argc, char *argv[]) {
         lib_read(f, str, size);
         lib_write(client_fd, str, strlen(str));
     }
-    close(client_fd);
+    // wait for kernel sent success
+    sleep(2);
+    shutdown(client_fd, SHUT_WR);
     unlink("temp.txt");
 }

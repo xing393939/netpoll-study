@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/tcp.h>
 #include <sys/epoll.h>
 #include <sys/ioctl.h>
 #include <netdb.h>
@@ -41,6 +42,17 @@ void create_file(char *name, int size) {
     fclose(f);
 }
 
+void wait_kernel_success(int client_fd) {
+    int pending = 1;
+    while (pending > 0) {
+        ioctl(client_fd, TIOCOUTQ, &pending);
+        struct tcp_info info;
+        socklen_t info_len = sizeof(info);
+        getsockopt(client_fd, IPPROTO_TCP, TCP_INFO, (void *)&info, &info_len);
+        pending += info.tcpi_unacked;
+    }
+}
+
 // gcc 2.map_write.c include.c -o 2.out && strace -c ./2.out
 // 1.07s
 int main(int argc, char *argv[]) {
@@ -65,10 +77,9 @@ int main(int argc, char *argv[]) {
         }
         lib_write(client_fd, str, strlen(str));
     }
-    int pending = 1;
-    while (pending > 0) {
-        ioctl(client_fd, TIOCOUTQ, &pending);
-    }
+    // wait_kernel_success(client_fd);
+    // wait for kernel sent success
+    sleep(2);
     shutdown(client_fd, SHUT_WR);
     unlink("temp.txt");
 }
