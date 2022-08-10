@@ -41,7 +41,11 @@ void create_file(char *name, int size) {
 
 // gcc 4.splice.c include.c -o 4.out && strace -c ./4.out
 // echo info commandstats|redis-cli|grep ping
-// 1.30s
+// 添加流量规则：iptables -A INPUT -p tcp --dport 6379
+// 查看监控数据：iptables -L INPUT -v -n -x
+// 重置监控数据：iptables -Z INPUT
+// 删除监控规则：iptables -D INPUT -p tcp --dport 6379
+// 数据包头部 = EthernetHeader(14B) + IPHeader(20B) + TCPHeader(20B)，但iptables的统计不包含EthernetHeader
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);
     lib_connect(client_fd, "127.0.0.1", 6379);

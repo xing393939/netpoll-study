@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
+#include <sys/ioctl.h>
 #include <netdb.h>
 #include <fcntl.h>
 #include <sys/wait.h>
@@ -44,6 +45,13 @@ void create_file(char *name, int size) {
 // 1.07s
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);
+    int rsize;
+    socklen_t len = sizeof(rsize);
+    getsockopt(client_fd, SOL_SOCKET, SO_RCVBUF, &rsize, &len);
+    printf("SO_RCVBUF:%d\n", rsize);
+    getsockopt(client_fd, SOL_SOCKET, SO_SNDBUF, &rsize, &len);
+    printf("SO_SNDBUF:%d\n", rsize);
+
     lib_connect(client_fd, "127.0.0.1", 6379);
 
     int size = atoi(argv[1]);
@@ -57,6 +65,10 @@ int main(int argc, char *argv[]) {
         }
         lib_write(client_fd, str, strlen(str));
     }
-    close(client_fd);
+    int pending = 1;
+    while (pending > 0) {
+        ioctl(client_fd, TIOCOUTQ, &pending);
+    }
+    shutdown(client_fd, SHUT_WR);
     unlink("temp.txt");
 }
