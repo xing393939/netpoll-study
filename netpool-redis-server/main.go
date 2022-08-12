@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/cloudwego/netpoll"
+	"netpoll-study/netpoll026"
 )
 
 func main() {

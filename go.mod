@@ -2,4 +2,4 @@ module netpoll-study
 
 go 1.16
 
-require github.com/cloudwego/netpoll v0.2.6 // indirect
+require github.com/bytedance/gopkg v0.0.0-20220413063733-65bf48ffb3a7
