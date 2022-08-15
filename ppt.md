@@ -13,7 +13,7 @@ style: |
 
 ---
 <!-- _class: center -->
-# 字节跳动Netpoll网络包
+# 字节跳动的Netpoll网络包
 
 ---
 # 内容目录
@@ -50,11 +50,13 @@ func (c *TCPConn) Read(b []byte) (int, error)
 ```
 
 ---
-# 特点2：读写socket的优化之readv，writev
+# 特点2：读写socket的优化（readv，writev）
 ```c
 ssize_t read(int fd, void *buf, size_t count);
-ssize_t write(int fd, const void *buf, size_t count);
+ssize_t write(int fd, void *buf, size_t count);
 
+ssize_t readv(int fd, const struct iovec *iov, int iovcnt);
+ssize_t writev(int fd, const struct iovec *iov, int iovcnt);
 
 char *str0, *str1 = malloc(5), malloc(5);
 struct iovec iov[2];
@@ -67,19 +69,21 @@ ssize_t wn = writev(STDOUT_FILENO, iov, 2);
 ```
 
 ---
-# 特点2：读写socket的优化之零拷贝
+# 特点2：读写socket的优化（零拷贝）
 
-```
-send with MSG_ZEROCOPY
+```c
+// msghdr中包含iovec、iovcnt；flags可设置MSG_ZEROCOPY
+ssize_t sendmsg(int sockfd, struct msghdr *msg, int flags);
+ssize_t recvmsg(int sockfd, struct msghdr *msg, int flags);
 ```
 1. 内核4.14开始支持TCP，5.0之后才支持UDP
 1. 只适用于大文件(10KB左右)的场景，小文件场景因为page pinning页锁定和等待缓冲区释放的通知消息这些机制，甚至可能比直接CPU拷贝更耗时
 1. 需要额外调用poll()和recvmsg()系统调用等待buffer被释放的通知消息
-1. 内核5.4支持recv with MSG_ZEROCOPY
+1. 内核5.4才支持recv
 
 ---
 # LinkBuffer的设计
-![bg w:92%](images/linkbuffer2.png)
+![bg w:95%](images/linkbuffer2.png)
 
 ---
 <!-- _class: center -->
