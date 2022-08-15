@@ -6,13 +6,14 @@ style: |
     background-color: #ccc;
     justify-content: normal;
   }
+  section.center {
+    justify-content: center;
+    text-align: center;
+  }
 
 ---
-# 
-# 
-# 
+<!-- _class: center -->
 # 字节跳动Netpoll网络包
-官方网站：https://www.cloudwego.io/zh/docs/netpoll/
 
 ---
 # 内容目录
@@ -67,3 +68,19 @@ ssize_t wn = writev(STDOUT_FILENO, iov, 2);
 
 ---
 # 特点2：读写socket的优化之零拷贝
+
+```
+send with MSG_ZEROCOPY
+```
+1. 内核4.14开始支持TCP，5.0之后才支持UDP
+1. 只适用于大文件(10KB左右)的场景，小文件场景因为page pinning页锁定和等待缓冲区释放的通知消息这些机制，甚至可能比直接CPU拷贝更耗时
+1. 需要额外调用poll()和recvmsg()系统调用等待buffer被释放的通知消息
+1. 内核5.4支持recv with MSG_ZEROCOPY
+
+---
+# LinkBuffer的设计
+![bg w:92%](images/linkbuffer2.png)
+
+---
+<!-- _class: center -->
+# Thanks

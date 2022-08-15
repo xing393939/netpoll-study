@@ -5,6 +5,8 @@ import (
 	"unsafe"
 )
 
+const MSG_ZEROCOPY = 0x4000000
+
 func GetSysFdPairs() (r, w int) {
 	fds, _ := syscall.Socketpair(syscall.AF_UNIX, syscall.SOCK_STREAM, 0)
 	return fds[0], fds[1]
@@ -66,8 +68,7 @@ func sendmsg(fd int, bs [][]byte, ivs []syscall.Iovec, zerocopy bool) (n int, er
 	}
 	var flags uintptr
 	if zerocopy {
-		// MSG_ZEROCOPY flag
-		flags = 0x4000000
+		flags = MSG_ZEROCOPY
 	}
 	var msghdr = syscall.Msghdr{
 		Iov:    &ivs[0],

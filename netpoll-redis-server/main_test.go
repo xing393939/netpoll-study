@@ -44,6 +44,8 @@ func BenchmarkSendmsg(b *testing.B) {
 	r, w := GetSysFdPairs()
 	buffer := make([]byte, 128)
 
+	syscall.SetsockoptInt(w, syscall.SOL_SOCKET, MSG_ZEROCOPY, 1)
+
 	// benchmark
 	var br = barrier{}
 	br.bs = make([][]byte, 2)
@@ -53,7 +55,7 @@ func BenchmarkSendmsg(b *testing.B) {
 	b.ReportAllocs()
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		sendmsg(w, br.bs, br.ivs, false)
+		sendmsg(w, br.bs, br.ivs, true)
 		syscall.RawSyscall(syscall.SYS_READ, uintptr(r), uintptr(unsafe.Pointer(&buffer[0])), uintptr(len(buffer)))
 	}
 }
