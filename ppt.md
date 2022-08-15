@@ -23,7 +23,7 @@ style: |
 
 ---
 # Netpoll包和net包的对比
-![bg fit](images/net_netpoll.png)
+![bg w:95%](images/net_netpoll.png)
 
 ---
 问题：
@@ -49,6 +49,21 @@ func (c *TCPConn) Read(b []byte) (int, error)
 ```
 
 ---
-# 特点2：读写socket的优化
+# 特点2：读写socket的优化之readv，writev
+```c
+ssize_t read(int fd, void *buf, size_t count);
+ssize_t write(int fd, const void *buf, size_t count);
 
-readv/writev、零拷贝
+
+char *str0, *str1 = malloc(5), malloc(5);
+struct iovec iov[2];
+iov[0].iov_base = str0;
+iov[0].iov_len = strlen(str0);
+iov[1].iov_base = str1;
+iov[1].iov_len = strlen(str1);
+ssize_t rn = readv(STDIN_FILENO, iov, 2);
+ssize_t wn = writev(STDOUT_FILENO, iov, 2);
+```
+
+---
+# 特点2：读写socket的优化之零拷贝
