@@ -55,8 +55,8 @@ func (c *TCPConn) Read(b []byte) (int, error)
 ssize_t read(int fd, void *buf, size_t count);
 ssize_t write(int fd, void *buf, size_t count);
 
-ssize_t readv(int fd, const struct iovec *iov, int iovcnt);
-ssize_t writev(int fd, const struct iovec *iov, int iovcnt);
+ssize_t readv(int fd, const struct iovec *iov, int iovcnt);  // 顺序填入每个缓冲区
+ssize_t writev(int fd, const struct iovec *iov, int iovcnt); // 顺序读取每个缓冲区再写
 
 char *str0, *str1 = malloc(5), malloc(5);
 struct iovec iov[2];

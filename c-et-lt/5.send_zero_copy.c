@@ -1,12 +1,16 @@
+#define _GNU_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <sys/types.h>
+#include <unistd.h>
+#include <sys/syscall.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
 #include <netdb.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <sys/mman.h>
+#include <sys/sendfile.h>
 #include <time.h>
 #include <signal.h>
 #include <string.h>
@@ -19,11 +23,11 @@ void lib_epoll_ctl(int op, int fd, int events);
 
 void lib_epoll_mod(int op, int fd);
 
-int lib_epoll_wait(struct epoll_event *events, int num, int timeout);
-
 ssize_t lib_read(int fd, void *vptr, size_t n);
 
 ssize_t lib_write(int fd, const void *vptr, size_t n);
+
+int lib_epoll_wait(struct epoll_event *events, int num, int timeout);
 
 void create_file(char *name, int size) {
     FILE *f = fopen(name, "w+");
@@ -39,8 +43,7 @@ void create_file(char *name, int size) {
     fclose(f);
 }
 
-// gcc 1.read_write.c include.c -o 1.out && strace -c ./1.out 1024
-// 1.26s
+// gcc 5.send_zero_copy.c include.c -o 5.out && strace -c ./5.out 1024
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);
     lib_connect(client_fd, "127.0.0.1", 6379);
@@ -48,11 +51,13 @@ int main(int argc, char *argv[]) {
     int size = atoi(argv[1]);
     create_file("temp.txt", size);
     int f = open("temp.txt", O_RDONLY);
+    int one;
+    setsockopt(client_fd, SOL_SOCKET, SO_ZEROCOPY, &one, sizeof(one));
     char *str = malloc(size);
 
     for (int i = 0; i < 10000; i++) {
         lib_read(f, str, size);
-        lib_write(client_fd, str, strlen(str));
+        send(client_fd, str, strlen(str), MSG_ZEROCOPY);
     }
     // wait for kernel sent success
     sleep(2);
