@@ -5,6 +5,7 @@ import (
 	"netpoll-study/netpoll026"
 )
 
+// dlv --listen=:2345 --headless=true --api-version=2 --accept-multiclient exec ./demo.exe
 func main() {
 	listener, _ := netpoll.CreateListener("tcp", "localhost:6382")
 	eventLoop, _ := netpoll.NewEventLoop(

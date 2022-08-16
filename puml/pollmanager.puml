@@ -1,0 +1,25 @@
+@startuml
+
+[poll_manager.go \n init()] --> [pollmanager = &manager{} \n pollmanager.SetLoadBalance(RoundRobin) \n	pollmanager.SetNumLoops(num)]
+[pollmanager = &manager{} \n pollmanager.SetLoadBalance(RoundRobin) \n	pollmanager.SetNumLoops(num)] --> [manager \n Run()]
+[manager \n Run()] --> [poll = openPoll()]
+[manager \n Run()] --> [go poll.Wait()]
+[poll = openPoll()] --> [openDefaultPoll()]
+[openDefaultPoll()] -->[syscall.EpollCreate1(0) \n poll.wop = eventfd()]
+[go poll.Wait()] ---> [for { \n<U+0009> EpollWait() \n<U+0009> p.Handler(p.events) \n }]
+
+rectangle "operator = p.events[i].data \n evt := p.events[i].events" as switch
+
+[p.Handler(p.events)] --> switch
+switch --> [operator.FD == p.wop.FD]
+[operator.FD == p.wop.FD] --> [退出pool或者不处理]
+switch --> [evt&syscall.EPOLLIN != 0]
+[evt&syscall.EPOLLIN != 0] --> [operator.OnRead(p)]
+[evt&syscall.EPOLLIN != 0] --> [n, err = readv(operator.FD) \n operator.InputAck(n)]
+switch --> [evt&(syscall.EPOLLHUP) != 0]
+[evt&(syscall.EPOLLHUP) != 0] --> [关闭连接]
+switch --> [evt&syscall.EPOLLOUT != 0]
+[evt&syscall.EPOLLOUT != 0] --> [operator.OnWrite(p)]
+[evt&syscall.EPOLLOUT != 0] --> [n, err = sendmsg(operator.FD) \n operator.OutputAck(n)]
+
+@enduml

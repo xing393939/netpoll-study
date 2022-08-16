@@ -1,0 +1,22 @@
+@startuml
+
+[main()] ---> [eventLoop \n Serve(ln)]
+[eventLoop \n Serve(ln)] ...> [ConvertListener(ln)]
+[ConvertListener(ln)] ---> [syscall.SetNonblock(ln)]
+[eventLoop \n Serve(ln)] ...> [evl.svr = newServer() \n evl.svr.Run()]
+[evl.svr = newServer() \n evl.svr.Run()] ---> [s.operator.OnRead = s.OnRead \n s.operator.poll = pollmanager.Pick() \n s.operator.Control(PollReadable)]
+
+[s.OnRead()] --> [conn, err := s.ln.Accept()]
+[s.OnRead()] --> [connection.init(conn)]
+[conn, err := s.ln.Accept()] --> [TCPListener \n Accept()]
+[TCPListener \n Accept()] --> [l.accept()]
+[l.accept()] --> [fd, err := ln.fd.accept()]
+[fd, err := ln.fd.accept()] --> [fd.pfd.Accept()]
+[fd.pfd.Accept()] --> [accept(fd.Sysfd)]
+[accept(fd.Sysfd)] --> [ns = Accept4Func(s, syscall.SOCK_NONBLOCK|syscall.SOCK_CLOEXEC) \n syscall.SetNonblock(ns)]
+[connection.init(conn)] ----> [c.readTrigger = make(chan struct{}, 1) \n c.writeTrigger = make(chan error, 1) \n c.inputBuffer, c.outputBuffer = NewLinkBuffer(pagesize), NewLinkBuffer() \n setZeroCopy(c.fd) \n setBlockZeroCopySend(c.fd)]
+[connection.init(conn)] --> [c.onPrepare()]
+[c.onPrepare()]  --> [c.register()]
+[c.register()] --> [c.operator.poll = pollmanager.Pick() \n c.operator.Control(PollReadable)]
+
+@enduml
