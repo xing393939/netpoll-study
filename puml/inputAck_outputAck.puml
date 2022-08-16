@@ -1,0 +1,7 @@
+@startuml
+
+[operator.InputAck(n)] ---> [length = c.inputBuffer.bookAck(n)]
+
+[operator.OutputAck(n)] ...> [ConvertListener(ln)]
+
+@enduml
