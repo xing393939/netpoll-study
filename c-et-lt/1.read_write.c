@@ -39,7 +39,7 @@ void create_file(char *name, int size) {
     fclose(f);
 }
 
-// gcc 1.read_write.c include.c -o 1.out && strace -c ./1.out 1024
+// gcc -g 1.read_write.c include.c -o 1.out && strace -c ./1.out 1024
 // 1.26s
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);

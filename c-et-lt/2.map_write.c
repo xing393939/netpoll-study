@@ -53,7 +53,7 @@ void wait_kernel_success(int client_fd) {
     }
 }
 
-// gcc 2.map_write.c include.c -o 2.out && strace -c ./2.out
+// gcc -g 2.map_write.c include.c -o 2.out && strace -c ./2.out 1024
 // 1.07s
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);

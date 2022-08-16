@@ -39,7 +39,7 @@ void create_file(char *name, int size) {
     fclose(f);
 }
 
-// gcc 4.splice.c include.c -o 4.out && strace -c ./4.out 1024
+// gcc -g 4.splice.c include.c -o 4.out && strace -c ./4.out 1024
 // echo info commandstats|redis-cli|grep ping
 // 添加流量规则：iptables -A INPUT -p tcp --dport 6379
 // 查看监控数据：iptables -L INPUT -v -n -x

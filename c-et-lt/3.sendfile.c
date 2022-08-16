@@ -37,7 +37,7 @@ void create_file(char *name, int size) {
     fclose(f);
 }
 
-// gcc 3.sendfile.c include.c -o 3.out && strace -c ./3.out
+// gcc -g 3.sendfile.c include.c -o 3.out && strace -c ./3.out 1024
 // 0.66s
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);

@@ -43,10 +43,10 @@ void create_file(char *name, int size) {
     fclose(f);
 }
 
-// gcc 5.send_zero_copy.c include.c -o 5.out && strace -c ./5.out 1024
+// gcc -g 5.send_zero_copy.c include.c -o 5.out && strace -c ./5.out 1024
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);
-    lib_connect(client_fd, "127.0.0.1", 6379);
+    lib_connect(client_fd, "192.168.2.119", 6379);
 
     int size = atoi(argv[1]);
     create_file("temp.txt", size);
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 
     for (int i = 0; i < 10000; i++) {
         lib_read(f, str, size);
-        send(client_fd, str, strlen(str), MSG_ZEROCOPY);
+        send(client_fd, str, strlen(str), 0);
     }
     // wait for kernel sent success
     sleep(2);
