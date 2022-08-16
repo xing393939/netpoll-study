@@ -11,8 +11,23 @@
 #include <signal.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <string.h>
 
 int epfd;
+
+void create_file(char *name, int size) {
+    FILE *f = fopen(name, "w+");
+    char *str = malloc(size);
+    strcpy(str, "set a ");
+    for (int i = 6; i < size; i++) {
+        str[i] = 97;
+    }
+    str[size - 3] = '\r';
+    str[size - 2] = '\n';
+    str[size - 1] = 0;
+    fputs(str, f);
+    fclose(f);
+}
 
 int lib_epoll_create1() {
     epfd = epoll_create1(EPOLL_CLOEXEC);

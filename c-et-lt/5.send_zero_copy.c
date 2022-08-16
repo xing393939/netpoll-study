@@ -15,6 +15,8 @@
 #include <signal.h>
 #include <string.h>
 
+void create_file(char *name, int size);
+
 void lib_connect(int fd, char *addr, int port);
 
 void lib_epoll_create1();
@@ -23,25 +25,11 @@ void lib_epoll_ctl(int op, int fd, int events);
 
 void lib_epoll_mod(int op, int fd);
 
+int lib_epoll_wait(struct epoll_event *events, int num, int timeout);
+
 ssize_t lib_read(int fd, void *vptr, size_t n);
 
 ssize_t lib_write(int fd, const void *vptr, size_t n);
-
-int lib_epoll_wait(struct epoll_event *events, int num, int timeout);
-
-void create_file(char *name, int size) {
-    FILE *f = fopen(name, "w+");
-    char *str = malloc(size);
-    strcpy(str, "set a ");
-    for (int i = 6; i < size; i++) {
-        str[i] = 97;
-    }
-    str[size - 3] = '\r';
-    str[size - 2] = '\n';
-    str[size - 1] = 0;
-    fputs(str, f);
-    fclose(f);
-}
 
 // gcc -g 5.send_zero_copy.c include.c -o 5.out && strace -c ./5.out 1024
 // gcc -g 5.send_zero_copy.c include.c -o 5.out && perf record -g --call-graph dwarf ./5.out 1024
