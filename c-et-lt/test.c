@@ -86,8 +86,6 @@ void funcwrite(int sockfd) {
 int main() {
     int sockfd, connfd;
     struct sockaddr_in servaddr, cli;
-    int optValue = 1;
-
     setbuf(stdout, NULL);
 
     // socket create and verification
@@ -99,6 +97,7 @@ int main() {
         printf("Socket successfully created..\n");
     }
 
+    int optValue = 1;
     if (setsockopt(sockfd, SOL_SOCKET, SO_ZEROCOPY, &optValue, sizeof(optValue)) != 0) {
         printf("zero copy flag failed...\n");
         exit(0);

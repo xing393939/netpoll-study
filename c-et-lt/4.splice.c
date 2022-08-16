@@ -48,7 +48,7 @@ void create_file(char *name, int size) {
 // 数据包头部 = EthernetHeader(14B) + IPHeader(20B) + TCPHeader(20B)，但iptables的统计不包含EthernetHeader
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);
-    lib_connect(client_fd, "127.0.0.1", 6379);
+    lib_connect(client_fd, "192.168.2.119", 6379);
 
     int size = atoi(argv[1]);
     create_file("temp.txt", size);

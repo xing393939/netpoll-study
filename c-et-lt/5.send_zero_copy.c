@@ -44,6 +44,8 @@ void create_file(char *name, int size) {
 }
 
 // gcc -g 5.send_zero_copy.c include.c -o 5.out && strace -c ./5.out 1024
+// gcc -g 5.send_zero_copy.c include.c -o 5.out && perf record -g --call-graph dwarf ./5.out 1024
+// perf report -f
 int main(int argc, char *argv[]) {
     int client_fd = socket(PF_INET, SOCK_STREAM, 0);
     lib_connect(client_fd, "192.168.2.119", 6379);
@@ -51,13 +53,13 @@ int main(int argc, char *argv[]) {
     int size = atoi(argv[1]);
     create_file("temp.txt", size);
     int f = open("temp.txt", O_RDONLY);
-    int one;
+    int one = 1;
     setsockopt(client_fd, SOL_SOCKET, SO_ZEROCOPY, &one, sizeof(one));
     char *str = malloc(size);
 
     for (int i = 0; i < 10000; i++) {
         lib_read(f, str, size);
-        send(client_fd, str, strlen(str), 0);
+        send(client_fd, str, strlen(str), MSG_DONTWAIT | MSG_ZEROCOPY);
     }
     // wait for kernel sent success
     sleep(2);

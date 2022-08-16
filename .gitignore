@@ -1,4 +1,6 @@
 /.idea
+*.data
+*.old
 *.out
 *.exe
 main

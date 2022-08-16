@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
     getsockopt(client_fd, SOL_SOCKET, SO_SNDBUF, &rsize, &len);
     printf("SO_SNDBUF:%d\n", rsize);
 
-    lib_connect(client_fd, "127.0.0.1", 6379);
+    lib_connect(client_fd, "192.168.2.119", 6379);
 
     int size = atoi(argv[1]);
     create_file("temp.txt", size);
