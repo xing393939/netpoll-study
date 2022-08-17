@@ -1,0 +1,39 @@
+@startuml
+
+rectangle "eventLoop" {
+    [{ \n<U+0009> reader.Next(n) \n }]
+    [c.waitRead(n)]
+    [c.inputBuffer.Next(n)]
+    [c.waitReadSize = n \n for c.inputBuffer.Len() < n { \n<U+0009> <-c.readTrigger \n }]
+    [if b.isSingleNode(n) { \n<U+0009> return b.read.Next(n) \n }]
+    (return node.buf[node.off:node.off+n])
+}
+
+rectangle "c.bookSize = 512 \n c.maxSize = 8196 \n bs[0] = c.inputBuffer.book(c.bookSize, c.maxSize)" as inputs
+rectangle "l := cap(b.write.buf) - b.write.malloc \n if l == 0 { \n<U+0009> b.write.next = newLinkBufferNode(maxSize) \n<U+0009> b.write = b.write.next \n } \n b.write.Malloc(l)" as book
+rectangle "for i := 0; i < len(bs); i++ { \n<U+0009> ivs[i].Base = &bs[i][0] \n<U+0009> ivs[i].Len = len(bs[i]) \n }" as iovecs
+rectangle "bs = operator.Inputs(p.barriers[i].bs)" as bs
+bs ---> inputs
+inputs ---> book
+book ---> (return node.buf[node.malloc:node.malloc+l])
+[readv(operator.FD, bs, ivs)] ---> [iovLen := iovecs(bs, ivs) \n 调用readv(ivs)]
+[iovLen := iovecs(bs, ivs) \n 调用readv(ivs)] --> iovecs
+
+[evt&syscall.EPOLLIN != 0] --> bs
+[evt&syscall.EPOLLIN != 0] --> [readv(operator.FD, bs, ivs)]
+[evt&syscall.EPOLLIN != 0] --> [operator.InputAck(n)]
+
+[operator.InputAck(n)] ---> [length = c.inputBuffer.bookAck(n) \n needTrigger = true]
+[length = c.inputBuffer.bookAck(n) \n needTrigger = true] --> [if length == n { \n<U+0009> needTrigger = c.onRequest() \n }]
+[if length == n { \n<U+0009> needTrigger = c.onRequest() \n }] --> [c.onProcess(isProcessable, c.onRequestCallback)]
+[c.onProcess(isProcessable, c.onRequestCallback)] --> [runTask = go func \n runTask(c.ctx, task)]
+[runTask = go func \n runTask(c.ctx, task)] --> [{ \n<U+0009> reader.Next(n) \n }]
+[{ \n<U+0009> reader.Next(n) \n }] --> [c.waitRead(n)]
+[c.waitRead(n)] ---> [c.waitReadSize = n \n for c.inputBuffer.Len() < n { \n<U+0009> <-c.readTrigger \n }]
+[{ \n<U+0009> reader.Next(n) \n }] --> [c.inputBuffer.Next(n)]
+[c.inputBuffer.Next(n)] --> [if b.isSingleNode(n) { \n<U+0009> return b.read.Next(n) \n }]
+[if b.isSingleNode(n) { \n<U+0009> return b.read.Next(n) \n }] --> (return node.buf[node.off:node.off+n])
+[length = c.inputBuffer.bookAck(n) \n needTrigger = true] --> [if needTrigger && length >= c.waitReadSize) { \n<U+0009> c.triggerRead() \n }]
+[if needTrigger && length >= c.waitReadSize) { \n<U+0009> c.triggerRead() \n }] ---> [select { \n case c.readTrigger <- struct{}{}: \n default: \n}]
+
+@enduml
