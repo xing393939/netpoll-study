@@ -11,8 +11,8 @@ func main() {
 	eventLoop, _ := netpoll.NewEventLoop(
 		func(ctx context.Context, connection netpoll.Connection) error {
 			reader, writer := connection.Reader(), connection.Writer()
-			msg, _ := reader.ReadString(reader.Len())
-			if msg != "" {
+			msg, _ := reader.Next(reader.Len())
+			if msg != nil {
 				_ = reader.Release()
 				_, _ = writer.WriteString("+PONG\r\n")
 				_ = writer.Flush()
