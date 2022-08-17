@@ -31,7 +31,7 @@ style: |
 
 8核，1000个连接，50%空闲，两个方案当前使用的协程数是多少？
 
-![bg left:70% w:98%](images/net_netpoll2.jpg)
+![bg left:70% w:98%](images/net_netpoll2.svg)
 
 ---
 # 特点1：业务层使用时的零拷贝
