@@ -10,19 +10,27 @@
   1. 不要让io任务阻塞了线程/协程，例如：1系统调用read设置为non-blocking，2使用自研网络库gnet、netpoll
   1. 尽早的提交io任务给io设备，例如：有了新的read事件后开启协程来处理read->decode->process->encode->write，可以改成一个协程处理read、write，一个协程处理decode->process->encode
 * 关注点：
+  1. Netpoll是lt（不会for循环accept、read），net包是et（for循环accept、read）
   1. Netpoll是NIO模式，net包是BIO模式：[参考](https://www.cloudwego.io/zh/docs/netpoll/overview/)
     * net包提供的api（conn.Read）会挂起协程；Netpool提供的是创建eventPoll（传入onRequest方法）
-  2. Netpoll增加了连接的活性检查，net包没有：[参考](https://www.cloudwego.io/zh/docs/netpoll/overview/)
+  1. Netpoll增加了连接的活性检查，net包没有：[参考](https://www.cloudwego.io/zh/docs/netpoll/overview/)
     * Netpoll的conn有IsActive()方法
-  3. NoCopy API：Netpoll有零拷贝技术
+  1. NoCopy API：Netpoll有零拷贝技术
     * 1业务层的零拷贝：如果只使用了一个linkBufferNode直接使用该地址；2对socket的读写使用了零拷贝
-  4. LinkBuffer：多个tcp连接读写同一块内存池，减少内存分配开销
+  1. LinkBuffer：多个tcp连接读写同一块内存池，减少内存分配开销
     * LinkBuffer池和mcache分配
-  5. 如果有栈扩张问题，使用协程池gopool：没有worker创建worker，woker执行完task后若还有task则继续执行，没有则exit
+  1. 如果有栈扩张问题，使用协程池gopool：没有worker创建worker，worker执行完task后若还有task则继续执行，没有则exit
     * 减少栈扩张的开销
-  6. tcp Nagle算法的缺点：一般要等收到足够的数据包后才ack。解决：开启TCP_NODELAY，缺点是ack包变多(但是现在网络环境好)
-  7. tcp send之前先合并包：为啥不用tcp本身的合并功能？
-  8. 连接多路复用：假设上游的pv是M个，每个pv需要调用N次下游，那么下游流量就是MxN(多路复用后是M)
+  1. tcp Nagle算法的缺点：一般要等收到足够的数据包后才ack。解决：开启TCP_NODELAY，缺点是ack包变多(但是现在网络环境好)
+  1. tcp send之前先合并包：为啥不用tcp本身的合并功能？
+  1. 连接多路复用：假设上游的pv是M个，每个pv需要调用N次下游，那么下游流量就是MxN(多路复用后是M)
+
+#### 两个问题
+1. [readv调用时并没有使用多个内存块向量](https://github.com/cloudwego/netpoll/issues/190)
+1. [没有栈扩张问题为什么建议关闭gopool](https://github.com/cloudwego/netpoll/issues/170)
+1. [Next是无拷贝的，readBinary和readString是有拷贝](https://github.com/cloudwego/netpoll/issues/123)
+1. [改内核让sendmsg变成同步调用](https://github.com/cloudwego/netpoll/issues/26)
+1. [listener fd 和 client fd 是共享 epoll 的](https://github.com/cloudwego/netpoll/issues/14)
 
 ```
 // 读取 n 字节, 返回底层缓存切片, 同时缓存减少 n 字节

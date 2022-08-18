@@ -6,6 +6,13 @@ style: |
     background-color: #ccc;
     justify-content: normal;
   }
+  table {
+    width: 100%;
+    display:table;
+  }
+  td { 
+    text-align:center;
+  }
   section.center {
     justify-content: center;
     text-align: center;
@@ -14,6 +21,16 @@ style: |
 ---
 <!-- _class: center -->
 # 字节跳动的Netpoll网络包
+
+---
+|  | netpoll | gnet | evio | go net |
+|--|--|--|--|--|
+|Epoll(ET/LT) |LT |LT | LT | ET |
+|NIO          |✓|✓|✓| |
+|ZeroCopy Buffer|✓||||
+|Multisyscall   |✓||||
+
+(GopherChina 2021 的分享：字节跳动在 Go 网络库上的实践)
 
 ---
 # 内容目录
