@@ -19,7 +19,7 @@ func main() {
 		netpoll.WithOnConnect(func(ctx context.Context, upstream netpoll.Connection) context.Context {
 			// 创建downstream
 			dialer := netpoll.NewDialer()
-			connection, err := dialer.DialConnection("tcp", "rm-m5ey1j08ddn877eg46o.mysql.rds.aliyuncs.com:3306", time.Second)
+			connection, err := dialer.DialConnection("tcp", "mysql:3306", time.Second)
 			if err != nil {
 				panic("mysql error " + err.Error())
 			}
