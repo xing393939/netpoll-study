@@ -41,14 +41,14 @@ style: |
 
 ---
 # Netpoll包和net包的对比
-![bg w:95%](images/net_netpoll.png)
+![bg w:95%](../images/net_netpoll.png)
 
 ---
 问题：
 
 8核，1000个连接，50%空闲，两个方案当前使用的协程数是多少？
 
-![bg left:70% w:98%](images/net_netpoll2.svg)
+![bg left:70% w:98%](../images/net_netpoll2.svg)
 
 ---
 # 特点1：业务层使用时的零拷贝
@@ -100,7 +100,7 @@ ssize_t recvmsg(int sockfd, struct msghdr *msg, int flags);
 
 ---
 # LinkBuffer的设计
-![bg w:95%](images/linkbuffer2.png)
+![bg w:95%](../images/linkbuffer2.png)
 
 ---
 <!-- _class: center -->
