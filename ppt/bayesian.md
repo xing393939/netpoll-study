@@ -166,10 +166,10 @@ _28x28像素的手写数字图片和对应的数字，训练集60000张，测试
 
 ---
 参考视频：[伯努利分布](https://www.bilibili.com/video/BV1tG411a7gn/)、[高斯分布](https://www.bilibili.com/video/BV1yb4y1279i/)
-代码地址：[伯努利分布](https://github.com/xing393939/osc-study/blob/master/liuer/lesson9_bernoulli.py)、[高斯分布](https://github.com/xing393939/osc-study/blob/master/liuer/lesson9_gaussian.py)
+代码地址：[伯努利分布](https://colab.research.google.com/drive/1XqoIUZ0BmVurL-RS306FKPIju-t8_9V-?usp=sharing)、[高斯分布](https://colab.research.google.com/drive/1RsmhlBGVkAH3KWA-ES1hsVWmcPUlWC5A?usp=sharing)
 代码结果：
 - 伯努利分布法的准确率：84%
-- 高斯分布法的准确率：57%
+- 高斯分布法的准确率：56%
 
 注意事项：
 1. 朴素贝叶斯分类假设各个特征之间概率彼此独立，但实际上并不是
