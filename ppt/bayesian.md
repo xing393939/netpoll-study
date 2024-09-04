@@ -3,7 +3,9 @@ marp: true
 size: 16:9
 style: |
   section {
-    background-color: #ccc;
+    background: url(../images/join_bg.png) no-repeat #f3f5f8;
+    background-size: 100% auto;
+    background-position: 0 0;
     justify-content: normal;
   }
   table {
