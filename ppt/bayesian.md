@@ -7,6 +7,7 @@ style: |
     background-size: 100% auto;
     background-position: 0 0;
     justify-content: normal;
+    font-family: 'Microsoft YaHei', 'SimHei', sans-serif;
   }
   table {
     width: 100%;
